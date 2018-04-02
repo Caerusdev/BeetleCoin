@@ -65,6 +65,8 @@ string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
             "Date: %s\r\n"
             "Server: Beetle-json-rpc/%s\r\n"
             "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
+            "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
             "Content-Type: text/html\r\n"
             "Content-Length: 296\r\n"
             "\r\n"
@@ -91,6 +93,8 @@ string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
             "Content-Length: %u\r\n"
             "Content-Type: application/json\r\n"
             "Server: Beetle-json-rpc/%s\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Access-Control-Allow-Headers: Authorization, Content-Type\r\n"
             "\r\n"
             "%s",
         nStatus,
