@@ -1,6 +1,6 @@
 TEMPLATE = app
-TARGET = Beetle-qt
-VERSION = 2.1.0.3
+TARGET = BeetleCoin-qt
+VERSION = 1.0.3.0
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += network printsupport
 DEFINES += ENABLE_WALLET
@@ -28,18 +28,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 # workaround for boost 1.58
 DEFINES += BOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT
-
-# win32:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
-# win32:BOOST_INCLUDE_PATH=C:/deps/boost_1_57_0
-# win32:BOOST_LIB_PATH=C:/deps/boost_1_57_0/stage/lib
-# win32:BDB_INCLUDE_PATH=C:/deps/db-6.0.20/build_unix
-# win32:BDB_LIB_PATH=C:/deps/db-6.0.20/build_unix
-# win32:OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.2/include
-# win32:OPENSSL_LIB_PATH=C:/deps/openssl-1.0.2
-# win32:MINIUPNPC_INCLUDE_PATH=C:/deps/
-# win32:MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
-# win32:QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
-# win32:QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -95,6 +83,19 @@ contains(USE_DBUS, 1) {
     QT += dbus
 }
 
+# use: qmake "USE_IPV6=1" (enabled by default)
+#  or: qmake "USE_IPV6=0" (disabled by default)
+#  or: qmake "USE_IPV6=-" (not supported)
+contains(USE_IPV6, -) {
+    message(Building without IPv6 support)
+} else {
+    message(Building with IPv6 support)
+    count(USE_IPV6, 0) {
+        USE_IPV6=1
+    }
+    DEFINES += USE_IPV6=$$USE_IPV6
+}
+
 contains(BITCOIN_NEED_QT_PLUGINS, 1) {
     DEFINES += BITCOIN_NEED_QT_PLUGINS
     QTPLUGIN += qcncodecs qjpcodecs qtwcodecs qkrcodecs qtaccessiblewidgets
@@ -138,10 +139,10 @@ LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     QMAKE_CLEAN += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o; cd $$PWD/src/secp256k1; $(MAKE) clean
 } else {
     isEmpty(SECP256K1_LIB_PATH) {
-        win32:SECP256K1_LIB_PATH=C:/deps/secp256k1/.libs
-		}
+        windows:SECP256K1_LIB_PATH=C:/dev/coindeps32/Secp256k1/lib
+    }
     isEmpty(SECP256K1_INCLUDE_PATH) {
-        win32:SECP256K1_INCLUDE_PATH=C:/deps/secp256k1/include
+        windows:SECP256K1_INCLUDE_PATH=C:/dev/coindeps32/Secp256k1/include
     }
 }
 
@@ -312,7 +313,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/blockbrowser.h \
     src/qt/plugins/mrichtexteditor/mrichtextedit.h \
     src/qt/qvalidatedtextedit.h \
-    src/qt/tradingdialog.h
+    src/qt/tradingdialog.h \
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
@@ -428,6 +429,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/tradingdialog.cpp \
     src/rpcsmessage.cpp
 
+
 RESOURCES += \
     src/qt/bitcoin.qrc
 
@@ -453,7 +455,7 @@ FORMS += \
     src/qt/forms/sendmessagesdialog.ui \
     src/qt/forms/blockbrowser.ui \
     src/qt/forms/tradingdialog.ui \
-    src/qt/plugins/mrichtexteditor/mrichtextedit.ui
+    src/qt/plugins/mrichtexteditor/mrichtextedit.ui \
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h
@@ -587,8 +589,8 @@ macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit -framework CoreServices
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/Beetle.icns
-macx:TARGET = "Beetle-Qt"
+macx:ICON = src/qt/res/icons/bitcoin.icns
+macx:TARGET = "Transfer-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
